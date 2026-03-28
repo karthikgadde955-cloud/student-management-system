@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Student Task Manager</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/feather-icons"></script>
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <i data-feather="check-square"></i>
+        <span>Task Manager</span>
+      </div>
+      
+      <div class="sidebar-nav">
+        <a href="#" class="nav-item active" id="nav-dashboard">
+          <i data-feather="layout"></i>
+          Dashboard
+        </a>
+        <a href="#" class="nav-item" id="nav-calendar">
+          <i data-feather="calendar"></i>
+          Calendar
+        </a>
+        <a href="#" class="nav-item" id="nav-profile">
+          <i data-feather="user"></i>
+          Profile
+        </a>
+        
+        <div class="progress-container">
+          <div class="progress-header">
+            <span>Completion</span>
+            <span id="progressText">0%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="sidebar-footer">
+        <button class="nav-item btn-outline" style="width: 100%; justify-content: flex-start; border: none; padding: 0.75rem 1rem;" id="themeToggle">
+          <i data-feather="moon" id="themeIcon"></i>
+          <span id="themeText">Dark Mode</span>
+        </button>
+        <button class="nav-item btn-outline mt-1" style="width: 100%; justify-content: flex-start; border: none; padding: 0.75rem 1rem; color: var(--danger);" id="logoutBtn">
+          <i data-feather="log-out"></i>
+          Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="flex items-center gap-2">
+          <button class="btn-icon mobile-toggle" id="mobileToggle">
+            <i data-feather="menu"></i>
+          </button>
+          <div class="search-container">
+            <i data-feather="search" class="search-icon"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search tasks...">
+          </div>
+        </div>
+        
+        <div class="topbar-actions">
+          <div style="width: 32px; height: 32px; border-radius: 50%; background-color: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600;">
+            S
+          </div>
+        </div>
+      </header>
+
+      <section class="dashboard-content" id="view-dashboard">
+        <div class="dashboard-header">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">My Tasks</h1>
+            <p class="text-muted">Manage your assignments and studies</p>
+          </div>
+          
+          <div class="filters">
+            <select id="filterStatus" class="filter-select">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
+            
+            <select id="filterPriority" class="filter-select">
+              <option value="all">All Priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            
+            <select id="sortDate" class="filter-select">
+              <option value="dueSoon">Due Soon</option>
+              <option value="dueLater">Due Later</option>
+            </select>
+
+            <button class="btn btn-primary flex items-center gap-1" id="addTaskBtn">
+              <i data-feather="plus" style="width: 18px; height: 18px;"></i>
+              Add Task
+            </button>
+          </div>
+        </div>
+
+        <div id="tasksContainer" class="tasks-grid">
+          <!-- Tasks dynamically rendered here -->
+        </div>
+        
+        <div id="emptyState" class="empty-state" style="display: none;">
+          <i data-feather="inbox" class="empty-icon"></i>
+          <h3>No tasks found</h3>
+          <p>Get started by adding your first task.</p>
+        </div>
+      </section>
+
+      <!-- Calendar View -->
+      <section class="dashboard-content" id="view-calendar" style="display: none;">
+        <div class="dashboard-header">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Calendar</h1>
+            <p class="text-muted">View and manage your tasks by date</p>
+          </div>
+          <div class="filters">
+            <button class="btn btn-outline flex items-center gap-1" id="prevMonthBtn" style="padding: 0.5rem;">
+              <i data-feather="chevron-left" style="width: 18px; height: 18px;"></i>
+            </button>
+            <h2 id="currentMonthYear" style="font-size: 1.125rem; font-weight: 600; min-width: 140px; text-align: center;">Month Year</h2>
+            <button class="btn btn-outline flex items-center gap-1" id="nextMonthBtn" style="padding: 0.5rem;">
+              <i data-feather="chevron-right" style="width: 18px; height: 18px;"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="calendar-container">
+          <div class="calendar-day-headers">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+          </div>
+          <div class="calendar-grid" id="calendarGrid">
+            <!-- Days rendered dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile View -->
+      <section class="dashboard-content" id="view-profile" style="display: none;">
+        <div class="dashboard-header">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">My Profile</h1>
+            <p class="text-muted">Manage your personal information and settings</p>
+          </div>
+        </div>
+        
+        <div class="profile-container">
+          <div class="profile-wrapper">
+            <div class="profile-sidebar">
+              <div class="profile-avatar">
+                <div class="avatar-circle-lg">S</div>
+              </div>
+              <h3 style="font-size: 1.25rem; font-weight: 600; text-align: center; margin-top: 1rem;" id="profileDisplayName">Student</h3>
+              <p class="text-muted text-center" style="font-size: 0.875rem;" id="profileDisplayRole">Computer Science</p>
+            </div>
+            
+            <div class="profile-form-container">
+              <form id="profileForm">
+                <div class="form-group">
+                  <label class="form-label" for="profileName">Full Name</label>
+                  <input type="text" id="profileName" class="form-control" value="Student">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="profileEmail">Email Address</label>
+                  <input type="email" id="profileEmail" class="form-control" value="student@example.com">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="profileMajor">Major/Course</label>
+                  <input type="text" id="profileMajor" class="form-control" value="Computer Science">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="profileBio">Bio</label>
+                  <textarea id="profileBio" class="form-control" rows="4">A passionate student trying to stay organized!</textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;">
+                  <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Task Modal -->
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Add New Task</h2>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      
+      <form id="taskForm">
+        <input type="hidden" id="taskId">
+        
+        <div class="form-group">
+          <label class="form-label" for="taskTitle">Task Title</label>
+          <input type="text" id="taskTitle" class="form-control" required placeholder="E.g., Complete Math Assignment">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="taskDesc">Description</label>
+          <textarea id="taskDesc" class="form-control" rows="3" placeholder="Additional details..." required></textarea>
+        </div>
+        
+        <div class="flex gap-2 mb-2">
+          <div class="form-group" style="flex: 1; margin-bottom: 0;">
+            <label class="form-label" for="taskDate">Due Date</label>
+            <input type="date" id="taskDate" class="form-control" required>
+          </div>
+          
+          <div class="form-group" style="flex: 1; margin-bottom: 0;">
+            <label class="form-label" for="taskPriority">Priority</label>
+            <select id="taskPriority" class="form-control" required>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn btn-outline" id="cancelModal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
